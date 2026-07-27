@@ -1,19 +1,21 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { LenisProvider } from "@/components/lenis-provider"
 import ClickSpark from "@/components/click-spark"
 import "./globals.css"
 
-const _inter = Inter({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
 })
 
-const _jetbrainsMono = JetBrains_Mono({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-mono",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-outfit",
 })
 
 export const metadata: Metadata = {
@@ -41,8 +43,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased`}>
+    <html lang="en" className={`${plusJakartaSans.variable} ${outfit.variable}`}>
+      <body className="font-sans antialiased">
         <ClickSpark
           sparkColor="#3b82f6"
           sparkSize={12}

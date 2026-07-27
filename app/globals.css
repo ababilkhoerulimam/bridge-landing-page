@@ -45,6 +45,28 @@
   --green-accent: #10b981;
 }
 
+.font-outfit {
+  font-family: var(--font-outfit), 'Outfit', sans-serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), 'Plus Jakarta Sans', sans-serif;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(3, 11, 133, 0.15);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(3, 11, 133, 0.3);
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

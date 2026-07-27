@@ -64,9 +64,9 @@ export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
   ]
 
   return (
-    <aside className="w-64 bg-white/65 backdrop-blur-xl border border-slate-900/10 rounded-3xl p-5 shadow-[0_25px_50px_rgba(30,41,59,0.1),inset_0_1px_0_rgba(255,255,255,0.8)] flex flex-col h-[calc(100vh-40px)] sticky top-5 shrink-0 overflow-y-auto">
+    <aside className="w-64 bg-white/70 backdrop-blur-xl border border-slate-900/10 rounded-3xl p-4 shadow-[0_25px_50px_rgba(30,41,59,0.1),inset_0_1px_0_rgba(255,255,255,0.8)] flex flex-col h-[calc(100vh-40px)] sticky top-5 shrink-0 overflow-y-auto custom-scrollbar">
       {/* Brand Logo */}
-      <div className="flex items-center gap-3 pb-4 border-b border-slate-900/10 mb-4 shrink-0">
+      <div className="flex items-center gap-3 pb-3 border-b border-slate-900/10 mb-3 shrink-0">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           <Image
             src="/bridge-logo.png"
@@ -89,18 +89,18 @@ export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl font-mono text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl font-sans text-xs font-semibold transition-all duration-200 cursor-pointer text-left ${
                 isActive
-                  ? "bg-[#030b85]/10 text-[#030b85] border border-[#030b85]/25"
+                  ? "bg-[#030b85]/10 text-[#030b85] border border-[#030b85]/25 font-bold"
                   : "text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 border border-transparent"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 ${isActive ? "text-[#030b85]" : "text-slate-500"}`} />
-                <span>{item.label}</span>
+              <div className="flex items-center gap-2.5 min-w-0 flex-1 text-left">
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#030b85]" : "text-slate-500"}`} />
+                <span className="leading-tight text-left flex-1 whitespace-normal">{item.label}</span>
               </div>
               {item.badge && item.badge > 0 && (
-                <span className="text-[9px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded-full">
+                <span className="text-[9px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded-full shrink-0 ml-1">
                   {item.badge}
                 </span>
               )}
@@ -110,11 +110,11 @@ export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
       </nav>
 
       {/* Sidebar Footer & Logout */}
-      <div className="pt-3 border-t border-slate-900/10 mt-auto shrink-0 text-center">
-        <div className="text-[10px] font-mono text-slate-500 mb-2">PT BRIDGE INFRADATA</div>
+      <div className="pt-3 border-t border-slate-900/10 mt-3 shrink-0 text-center">
+        <div className="text-[10px] font-sans text-slate-500 mb-2 font-medium">PT BRIDGE INFRADATA</div>
         <button
           onClick={onLogout}
-          className="w-full py-2 px-3 border border-rose-200 rounded-xl bg-rose-50/50 hover:bg-rose-100 text-rose-700 font-mono text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+          className="w-full py-2 px-3 border border-rose-200 rounded-xl bg-rose-50/50 hover:bg-rose-100 text-rose-700 font-sans text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" /> Keluar Dashboard
         </button>

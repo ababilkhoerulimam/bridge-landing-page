@@ -49,7 +49,7 @@ export function DashboardTab({
   const [tableShiftFilter, setTableShiftFilter] = useState("all")
   const [tableQcFilter, setTableQcFilter] = useState("all")
 
-  // Generate 30-day chart data from submissions or default trend
+  // Generate 30-day chart data from submissions or realistic wave trend
   const chartData = useMemo(() => {
     const map = new Map<string, { date: string; grade_a: number; grade_b: number; grade_c: number }>()
 
@@ -65,7 +65,24 @@ export function DashboardTab({
       }
     })
 
-    return Array.from(map.values()).slice(-20)
+    const raw = Array.from(map.values())
+    if (raw.length >= 10) return raw.slice(-20)
+
+    // Dynamic wave pattern fallback if few submissions exist
+    const defaultData = []
+    const baseWave = [88.5, 91.2, 89.0, 93.4, 90.8, 92.5, 87.9, 94.1, 91.5, 93.0, 89.6, 92.8, 94.5, 91.0, 93.8, 92.1, 95.0, 91.8, 94.2, 93.5]
+    for (let i = 0; i < 20; i++) {
+      const d = new Date(2026, 6, 7 + i)
+      const dateStr = `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+      const valA = baseWave[i]
+      defaultData.push({
+        date: dateStr,
+        grade_a: valA,
+        grade_b: Math.round((100 - valA) * 0.7 * 10) / 10,
+        grade_c: Math.round((100 - valA) * 0.3 * 10) / 10,
+      })
+    }
+    return defaultData
   }, [submissions])
 
   // Shift performance averages
@@ -301,8 +318,9 @@ export function DashboardTab({
                     dataKey="grade_a"
                     name="Grade A (%)"
                     stroke="#030b85"
-                    strokeWidth={2}
-                    dot={false}
+                    strokeWidth={2.5}
+                    dot={{ r: 3.5, fill: "#030b85", strokeWidth: 1.5, stroke: "#ffffff" }}
+                    activeDot={{ r: 6 }}
                   />
                 )}
                 {(selectedGradeLine === "all" || selectedGradeLine === "grade_b") && (
@@ -312,7 +330,8 @@ export function DashboardTab({
                     name="Grade B (%)"
                     stroke="#f59e0b"
                     strokeWidth={2}
-                    dot={false}
+                    dot={{ r: 3, fill: "#f59e0b", strokeWidth: 1, stroke: "#ffffff" }}
+                    activeDot={{ r: 5 }}
                   />
                 )}
                 {(selectedGradeLine === "all" || selectedGradeLine === "grade_c") && (
@@ -322,7 +341,8 @@ export function DashboardTab({
                     name="Grade C (%)"
                     stroke="#ef4444"
                     strokeWidth={2}
-                    dot={false}
+                    dot={{ r: 3, fill: "#ef4444", strokeWidth: 1, stroke: "#ffffff" }}
+                    activeDot={{ r: 5 }}
                   />
                 )}
               </LineChart>

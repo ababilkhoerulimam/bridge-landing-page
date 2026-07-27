@@ -37,6 +37,7 @@ export default function OwnerPage() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("dashboard")
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [kilns, setKilns] = useState<KilnStatusItem[]>(INITIAL_KILNS)
+  const [isSimulating, setIsSimulating] = useState(true)
 
   const [selectedKiln, setSelectedKiln] = useState<KilnStatusItem | null>(null)
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
@@ -73,7 +74,7 @@ export default function OwnerPage() {
     }
   }, [])
 
-  // Poll localStorage for mandor updates every 3s
+  // Poll localStorage & simulate live telemetry fluctuations every 3s
   useEffect(() => {
     if (!isAuthenticated) return
 
@@ -83,21 +84,30 @@ export default function OwnerPage() {
         if (storedSubmissions) {
           setSubmissions(JSON.parse(storedSubmissions))
         }
-        const storedKilns = localStorage.getItem("bridge_kiln_status")
-        if (storedKilns) {
-          const dict = JSON.parse(storedKilns)
-          const kilnArray = Object.values(dict) as KilnStatusItem[]
-          if (kilnArray.length) {
-            setKilns(kilnArray)
-          }
-        }
+
+        // Live telemetry simulation
+        setKilns((prevKilns) =>
+          prevKilns.map((kiln) => {
+            if (!isSimulating) return kiln
+            const deltaTemp = Math.floor(Math.random() * 5) - 2
+            const newTemp = Math.max(1050, Math.min(1330, kiln.currentTemp + deltaTemp))
+            const status =
+              newTemp > 1300 || newTemp < 1080 ? "critical" : newTemp > 1250 || newTemp < 1100 ? "warning" : "normal"
+            return {
+              ...kiln,
+              currentTemp: newTemp,
+              status,
+              lastUpdated: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+            }
+          })
+        )
       } catch (e) {
         console.error(e)
       }
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [isAuthenticated])
+  }, [isAuthenticated, isSimulating])
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -208,23 +218,38 @@ export default function OwnerPage() {
         {/* Main Content Area */}
         <main className="flex-1 min-w-0 pb-10">
           <div className="bg-white/65 backdrop-blur-xl border border-slate-900/10 rounded-3xl p-5 md:p-6 shadow-[0_25px_50px_rgba(30,41,59,0.1),inset_0_1px_0_rgba(255,255,255,0.8)]">
-            <h1 className="text-xl md:text-2xl font-mono font-black text-[#030b85] uppercase tracking-tight mb-5 pb-3 border-b border-slate-900/10 flex items-center gap-2">
-              {activeTab === "dashboard" && "Dashboard Utama"}
-              {activeTab === "financial" && "Financial & Cost Analytics"}
-              {activeTab === "quality" && "Quality Metrics"}
-              {activeTab === "operational" && "Operational Metrics"}
-              {activeTab === "ai" && "Decision Intelligence & AI Recipe Optimizer"}
-              {activeTab === "alerts" && "Alerts & Anomalies"}
-              {activeTab === "visualisasi" && "Data Visualisasi 3D"}
-              {activeTab === "employee" && "Employee Performance & KPI"}
-              {activeTab === "inventory" && "Inventory & Materials Management"}
-              {activeTab === "target" && "Target & Goals Tracking"}
-              {activeTab === "sustainability" && "Sustainability & ESG Reporting"}
-              {activeTab === "audit_trail" && "Security & Audit Trail"}
-              {activeTab === "report" && "Laporan Operasional Produksi"}
-              {activeTab === "factory_map" && "Factory Interactive Map"}
-              {activeTab === "settings" && "Pengaturan Konfigurasi Pabrik"}
-            </h1>
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-5 pb-3 border-b border-slate-900/10">
+              <h1 className="text-xl md:text-2xl font-outfit font-extrabold text-[#030b85] uppercase tracking-tight flex items-center gap-2">
+                {activeTab === "dashboard" && "Dashboard Utama"}
+                {activeTab === "financial" && "Financial & Cost Analytics"}
+                {activeTab === "quality" && "Quality Metrics"}
+                {activeTab === "operational" && "Operational Metrics"}
+                {activeTab === "ai" && "Decision Intelligence & AI Recipe Optimizer"}
+                {activeTab === "alerts" && "Alerts & Anomalies"}
+                {activeTab === "visualisasi" && "Data Visualisasi 3D"}
+                {activeTab === "employee" && "Employee Performance & KPI"}
+                {activeTab === "inventory" && "Inventory & Materials Management"}
+                {activeTab === "target" && "Target & Goals Tracking"}
+                {activeTab === "sustainability" && "Sustainability & ESG Reporting"}
+                {activeTab === "audit_trail" && "Security & Audit Trail"}
+                {activeTab === "report" && "Laporan Operasional Produksi"}
+                {activeTab === "factory_map" && "Factory Interactive Map"}
+                {activeTab === "settings" && "Pengaturan Konfigurasi Pabrik"}
+              </h1>
+
+              {/* Live Simulation Toggle Button */}
+              <button
+                onClick={() => setIsSimulating(!isSimulating)}
+                className={`px-3 py-1.5 rounded-full font-sans text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border ${
+                  isSimulating
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700"
+                    : "bg-slate-200/80 border-slate-300 text-slate-600"
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${isSimulating ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`} />
+                <span>Simulasi Telemetri Pabrik: <strong>{isSimulating ? "AKTIF" : "NONAKTIF"}</strong></span>
+              </button>
+            </div>
 
             {activeTab === "dashboard" && (
               <DashboardTab
