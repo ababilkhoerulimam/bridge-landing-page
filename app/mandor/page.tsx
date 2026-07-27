@@ -117,9 +117,9 @@ export default function MandorPage() {
   }, [viewMode, syncState])
 
   return (
-    <div className="min-h-screen bg-[#eef2f9] bg-[radial-gradient(circle_at_20%_30%,#ffffff,#d7e3f5_70%)] text-slate-800 p-3 md:p-6 flex items-center justify-center font-sans">
+    <div className="min-h-screen bg-[#eef2f9] bg-[radial-gradient(circle_at_20%_30%,#ffffff,#d7e3f5_70%)] text-slate-800 p-3 md:p-6 flex items-center justify-center font-sans overflow-y-auto">
       {/* Glassmorphic Container Card matching Mandor.html 1:1 */}
-      <div className="bg-white/65 border border-slate-900/10 rounded-3xl w-full max-w-[1000px] h-[680px] flex flex-col p-4 md:p-6 backdrop-blur-xl shadow-[0_30px_60px_rgba(30,41,59,0.12),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden">
+      <div className="bg-white/65 border border-slate-900/10 rounded-3xl w-full max-w-[1000px] h-[calc(100vh-32px)] max-h-[720px] min-h-[600px] flex flex-col p-4 md:p-6 backdrop-blur-xl shadow-[0_30px_60px_rgba(30,41,59,0.12),inset_0_1px_0_rgba(255,255,255,0.8)] relative overflow-hidden">
         {/* Soft Guard Confirmation Modal */}
         <AnimatePresence>
           {softGuardModal.show && (
@@ -216,7 +216,7 @@ export default function MandorPage() {
             <LoginScreen onLogin={handleLogin} />
           </div>
         ) : viewMode === "handover" ? (
-          <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
             <ShiftHandover
               data={pendingSubmission || currentMachine}
               mandor={activeMandor}
@@ -230,8 +230,8 @@ export default function MandorPage() {
           /* Main 3-Column Grid matching Mandor.html: 180px 1fr 220px */
           <div className="grid grid-cols-[180px_1fr_220px] gap-4 flex-1 min-h-0 overflow-hidden">
             {/* Column 1: Kiln Machine Selection List */}
-            <div className="flex flex-col gap-2 overflow-y-auto pr-1 border-r border-slate-900/10">
-              <div className="text-[10px] font-sans font-extrabold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1">
+            <div className="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full pr-1 border-r border-slate-900/10">
+              <div className="text-[10px] font-sans font-extrabold uppercase tracking-wider text-slate-500 mb-1 flex items-center gap-1 shrink-0">
                 <Server className="w-3.5 h-3.5 text-[#030b85]" /> Mesin Kiln
               </div>
               {machines.map((m) => (
@@ -253,7 +253,7 @@ export default function MandorPage() {
             </div>
 
             {/* Column 2: Main Machine Parameter Entry Form */}
-            <div className="overflow-y-auto pr-1">
+            <div className="overflow-y-auto custom-scrollbar h-full pr-2">
               <MachineForm
                 machine={currentMachine}
                 onUpdate={handleMachineUpdate}
@@ -264,7 +264,7 @@ export default function MandorPage() {
             </div>
 
             {/* Column 3: Summary Panel & Shift Timeline */}
-            <div className="flex flex-col gap-3 overflow-y-auto pl-1 border-l border-slate-900/10">
+            <div className="flex flex-col gap-3 overflow-y-auto custom-scrollbar h-full pl-2 border-l border-slate-900/10">
               <SummaryPanel machine={currentMachine} />
               <ShiftTimeline step={currentStep} isWarning={currentMachine.temperature > 1300 || currentMachine.pusherSpeed > 45} />
             </div>
