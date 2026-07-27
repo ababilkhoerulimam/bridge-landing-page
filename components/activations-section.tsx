@@ -155,80 +155,80 @@ export function ActivationsSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {activations.map((activation) => (
-            <motion.div
-              key={activation.title}
-              variants={itemVariants}
-              onClick={() => setSelectedActivation(activation)}
-              whileHover={{
-                y: -8,
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 400, damping: 17 },
-              }}
-              className="group bg-[#121212] rounded-2xl p-6 cursor-pointer relative overflow-hidden flex flex-col justify-between"
-            >
-              <motion.div
-                className="absolute inset-0 bg-[#3b82f6]/0 group-hover:bg-[#3b82f6]"
-                transition={{ duration: 0.4 }}
-              />
+          {activations.map((activation) => {
+            const isMandor = activation.id === "mandors"
+            const isOwner = activation.id === "owners"
+            const href = isMandor ? "/mandor" : isOwner ? "/owner" : null
 
-              <div className="relative z-10">
+            const CardContent = (
+              <>
                 <motion.div
-                  className="w-11 h-11 rounded-xl bg-[#3b82f6] flex items-center justify-center mb-4 group-hover:bg-white transition-colors duration-300"
-                  whileHover={{ rotate: 10, scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <activation.icon className="w-5 h-5 text-white group-hover:text-[#3b82f6] transition-colors duration-300" />
-                </motion.div>
+                  className="absolute inset-0 bg-[#3b82f6]/0 group-hover:bg-[#3b82f6]"
+                  transition={{ duration: 0.4 }}
+                />
 
-                <h3 className="text-lg font-black text-white group-hover:text-white tracking-tight mb-2 transition-colors duration-300">
-                  {activation.title}
-                </h3>
-                <p className="text-white/60 group-hover:text-white/80 font-mono text-xs leading-relaxed mb-4 transition-colors duration-300">
-                  {activation.description}
-                </p>
-              </div>
-
-              <div className="relative z-10 pt-2">
-                {activation.id === "mandors" ? (
-                  <Link
-                    href="/mandor"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
+                <div className="relative z-10">
+                  <motion.div
+                    className="w-11 h-11 rounded-xl bg-[#3b82f6] flex items-center justify-center mb-4 group-hover:bg-white transition-colors duration-300"
+                    whileHover={{ rotate: 10, scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
                   >
+                    <activation.icon className="w-5 h-5 text-white group-hover:text-[#3b82f6] transition-colors duration-300" />
+                  </motion.div>
+
+                  <h3 className="text-lg font-black text-white group-hover:text-white tracking-tight mb-2 transition-colors duration-300 font-outfit">
+                    {activation.title}
+                  </h3>
+                  <p className="text-white/60 group-hover:text-white/80 font-sans text-xs leading-relaxed mb-4 transition-colors duration-300">
+                    {activation.description}
+                  </p>
+                </div>
+
+                <div className="relative z-10 pt-2">
+                  <div className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300 font-sans">
                     <span>{activation.cta}</span>
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
-                  </Link>
-                ) : activation.id === "owners" ? (
-                  <Link
-                    href="/owner"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
-                  >
-                    <span>{activation.cta}</span>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setSelectedActivation(activation)
+                  </div>
+                </div>
+              </>
+            )
+
+            if (href) {
+              return (
+                <Link key={activation.title} href={href} className="block">
+                  <motion.div
+                    variants={itemVariants}
+                    whileHover={{
+                      y: -8,
+                      scale: 1.02,
+                      transition: { type: "spring", stiffness: 400, damping: 17 },
                     }}
-                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300 cursor-pointer"
+                    className="group bg-[#121212] rounded-2xl p-6 cursor-pointer relative overflow-hidden flex flex-col justify-between h-full"
                   >
-                    <span>{activation.cta}</span>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          ))}
+                    {CardContent}
+                  </motion.div>
+                </Link>
+              )
+            }
+
+            return (
+              <motion.div
+                key={activation.title}
+                variants={itemVariants}
+                onClick={() => setSelectedActivation(activation)}
+                whileHover={{
+                  y: -8,
+                  scale: 1.02,
+                  transition: { type: "spring", stiffness: 400, damping: 17 },
+                }}
+                className="group bg-[#121212] rounded-2xl p-6 cursor-pointer relative overflow-hidden flex flex-col justify-between"
+              >
+                {CardContent}
+              </motion.div>
+            )
+          })}
         </motion.div>
       </div>
 
