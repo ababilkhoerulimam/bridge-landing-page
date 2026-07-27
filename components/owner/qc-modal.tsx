@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { X, ClipboardCheck, CheckCircle2 } from "lucide-react"
 import { Submission } from "@/types/bridge"
@@ -11,7 +12,13 @@ interface QCModalProps {
 }
 
 export function QCModal({ submission, onClose, onVerify }: QCModalProps) {
+  const [rejectCount, setRejectCount] = useState(0)
+  const [category, setCategory] = useState("Normal")
+
   if (!submission) return null
+
+  const batchCount = submission.batchCount || 100
+  const calculatedYield = Math.max(60, Math.min(100, (((batchCount - rejectCount) / batchCount) * 100))).toFixed(1)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
@@ -72,6 +79,47 @@ export function QCModal({ submission, onClose, onVerify }: QCModalProps) {
             </strong>
           </div>
         </div>
+
+        {!submission.signed && (
+          <div className="space-y-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div>
+              <label className="text-xs font-mono font-bold text-slate-700 block mb-1">
+                Input Reject / Cacat (Unit)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={batchCount}
+                value={rejectCount}
+                onChange={(e) => setRejectCount(Math.max(0, parseInt(e.target.value) || 0))}
+                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-mono font-bold text-[#030b85] focus:outline-none focus:ring-2 focus:ring-[#030b85]"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-mono font-bold text-slate-700 block mb-1">
+                Kalkulasi Yield Grade A Aktual (%)
+              </label>
+              <div className="px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg text-sm font-mono font-black text-emerald-700">
+                {calculatedYield}% Grade A Yield
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-mono font-bold text-slate-700 block mb-1">
+                Kategori Anomali / Defect
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#030b85]"
+              >
+                <option value="Normal">Normal (Sesuai SOP Standar)</option>
+                <option value="Retak Termal">Retak Termal (Overheat Kiln)</option>
+                <option value="Deformasi Penyusutan">Deformasi Penyusutan (Tinggi Clay)</option>
+                <option value="Kematangan Tidak Seragam">Kematangan Tidak Seragam (Pusher RPM)</option>
+              </select>
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3">
           {!submission.signed && (

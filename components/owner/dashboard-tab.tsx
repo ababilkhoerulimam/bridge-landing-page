@@ -47,6 +47,7 @@ export function DashboardTab({
   const [selectedGradeBar, setSelectedGradeBar] = useState<string>("all")
   const [tableSearch, setTableSearch] = useState("")
   const [tableShiftFilter, setTableShiftFilter] = useState("all")
+  const [tableQcFilter, setTableQcFilter] = useState("all")
 
   // Generate 30-day chart data from submissions or default trend
   const chartData = useMemo(() => {
@@ -94,9 +95,14 @@ export function DashboardTab({
         (s.name || "").toLowerCase().includes(tableSearch.toLowerCase()) ||
         (s.notes || "").toLowerCase().includes(tableSearch.toLowerCase())
       const matchShift = tableShiftFilter === "all" || s.shift === tableShiftFilter
-      return matchSearch && matchShift
+      const matchQc = tableQcFilter === "all" 
+        ? true 
+        : tableQcFilter === "verified" 
+          ? s.signed 
+          : !s.signed
+      return matchSearch && matchShift && matchQc
     })
-  }, [submissions, tableSearch, tableShiftFilter])
+  }, [submissions, tableSearch, tableShiftFilter, tableQcFilter])
 
   const todayTarget = 30000
   const todayOutput = useMemo(() => {
@@ -434,6 +440,16 @@ export function DashboardTab({
               <option value="Pagi">Shift Pagi</option>
               <option value="Siang">Shift Siang</option>
               <option value="Malam">Shift Malam</option>
+            </select>
+
+            <select
+              value={tableQcFilter}
+              onChange={(e) => setTableQcFilter(e.target.value)}
+              className="px-3 py-1.5 bg-white/80 border border-slate-300 rounded-full text-xs font-mono font-bold text-slate-700 focus:outline-none"
+            >
+              <option value="all">Semua QC</option>
+              <option value="verified">QC Verified</option>
+              <option value="pending">QC Pending</option>
             </select>
           </div>
         </div>

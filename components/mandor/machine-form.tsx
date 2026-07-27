@@ -34,6 +34,7 @@ export function MachineForm({
 }: MachineFormProps) {
   const [local, setLocal] = useState<MachineData>({ ...machine })
   const [selectedShift, setSelectedShift] = useState<"Pagi" | "Siang" | "Malam">("Pagi")
+  const [showSoftGuard, setShowSoftGuard] = useState(false)
 
   useEffect(() => {
     setLocal({ ...machine })
@@ -60,9 +61,19 @@ export function MachineForm({
   const isCompositionOver = totalComp > 100
   const isBatchZero = local.batchCount <= 0
   const isHardGuard = isTempZero || isCompositionOver || isBatchZero
+  const isSoftGuard = local.temperature > 1300 || local.pusherSpeed > 45
 
   const handleFormSubmit = () => {
     if (isHardGuard) return
+    if (isSoftGuard) {
+      setShowSoftGuard(true)
+      return
+    }
+    onSubmit({ ...local, shift: selectedShift })
+  }
+
+  const confirmSoftGuard = () => {
+    setShowSoftGuard(false)
     onSubmit({ ...local, shift: selectedShift })
   }
 
@@ -291,6 +302,45 @@ export function MachineForm({
           </button>
         )}
       </div>
+
+      {/* Soft Guard Modal */}
+      {showSoftGuard && (
+        <div className="fixed inset-0 bg-slate-900/60 z-[100] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden"
+          >
+            <div className="p-4 bg-amber-50 border-b border-amber-100 flex gap-3 items-start">
+              <AlertOctagon className="w-6 h-6 text-amber-600 flex-shrink-0" />
+              <div>
+                <h3 className="font-mono font-bold text-amber-900 mb-1">
+                  Peringatan: Deviasi Operasional!
+                </h3>
+                <p className="text-xs font-mono text-amber-800 leading-relaxed">
+                  {local.temperature > 1300 && "Suhu terlalu tinggi (>1300°C). "}
+                  {local.pusherSpeed > 45 && "Kecepatan pusher terlalu tinggi (>45 RPM). "}
+                  Data ini berisiko menghasilkan produk defect. Apakah Anda yakin ingin melanjutkan?
+                </p>
+              </div>
+            </div>
+            <div className="p-4 flex gap-3 bg-slate-50">
+              <button
+                onClick={() => setShowSoftGuard(false)}
+                className="flex-1 py-2 px-4 border border-slate-300 rounded-full font-mono text-xs font-bold text-slate-700 hover:bg-slate-100 cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmSoftGuard}
+                className="flex-1 py-2 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-mono text-xs font-bold cursor-pointer shadow-lg shadow-amber-600/20"
+              >
+                Lanjutkan
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

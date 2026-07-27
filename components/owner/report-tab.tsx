@@ -3,6 +3,8 @@
 import { useState } from "react"
 import { FileText, Download, CheckCircle2, Table, Calendar } from "lucide-react"
 import { Submission } from "@/types/bridge"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 
 interface ReportTabProps {
   submissions: Submission[]
@@ -60,6 +62,56 @@ export function ReportTab({ submissions }: ReportTabProps) {
     setTimeout(() => setDownloadMessage(""), 4000)
   }
 
+  const handleExportPdf = () => {
+    if (!submissions.length) return
+
+    const doc = new jsPDF()
+    const pageWidth = doc.internal.pageSize.width
+
+    // Header
+    doc.setFillColor(3, 11, 133) // #030b85
+    doc.rect(0, 0, pageWidth, 24, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFont("helvetica", "bold")
+    doc.setFontSize(14)
+    doc.text("Laporan Produksi & Logbook BRIDGE", 14, 16)
+
+    doc.setTextColor(100, 100, 100)
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "normal")
+    doc.text(`Dicetak pada: ${new Date().toLocaleString("id-ID")}`, 14, 32)
+    doc.text(`Total Data: ${submissions.length} Entry`, 14, 38)
+    const avgYield = submissions.length
+      ? (submissions.reduce((sum, s) => sum + s.actualQuality, 0) / submissions.length).toFixed(1)
+      : "92.4"
+    doc.text(`Rata-rata Yield Grade A: ${avgYield}%`, 14, 44)
+
+    // Table
+    const tableData = submissions.map((s) => [
+      s.timestamp.slice(0, 16),
+      s.name,
+      s.shift,
+      s.mandor,
+      s.temperature + " C",
+      s.pusherSpeed,
+      s.batchCount,
+      s.actualQuality + "%"
+    ])
+
+    autoTable(doc, {
+      startY: 52,
+      head: [["Waktu", "Mesin", "Shift", "Mandor", "Suhu", "Speed", "Batch", "Yield"]],
+      body: tableData,
+      theme: "striped",
+      headStyles: { fillColor: [3, 11, 133] },
+      styles: { fontSize: 8, cellPadding: 2 },
+    })
+
+    doc.save(`BRIDGE_Report_${new Date().toISOString().slice(0, 10)}.pdf`)
+    setDownloadMessage("Laporan PDF berhasil di-download!")
+    setTimeout(() => setDownloadMessage(""), 4000)
+  }
+
   return (
     <div className="space-y-5 animate-in">
       {/* Banner */}
@@ -76,12 +128,20 @@ export function ReportTab({ submissions }: ReportTabProps) {
           </div>
         </div>
 
-        <button
-          onClick={handleExportCsv}
-          className="py-2.5 px-5 rounded-full text-xs font-mono font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-        >
-          <Download className="w-4 h-4" /> Download Laporan CSV (.csv)
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleExportCsv}
+            className="py-2.5 px-5 rounded-full text-xs font-mono font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Download className="w-4 h-4" /> CSV
+          </button>
+          <button
+            onClick={handleExportPdf}
+            className="py-2.5 px-5 rounded-full text-xs font-mono font-bold text-white bg-[#030b85] hover:bg-[#1a3ba8] shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Download className="w-4 h-4" /> Export PDF Laporan
+          </button>
+        </div>
       </div>
 
       {downloadMessage && (

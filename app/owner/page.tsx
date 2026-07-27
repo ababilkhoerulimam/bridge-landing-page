@@ -11,6 +11,10 @@ import { DashboardTab } from "@/components/owner/dashboard-tab"
 import { DecisionIntelligenceTab } from "@/components/owner/decision-intelligence-tab"
 import { MandorManagementTab } from "@/components/owner/mandor-management-tab"
 import { ReportTab } from "@/components/owner/report-tab"
+import { AlertsTab } from "@/components/owner/alerts-tab"
+import { FinancialTab } from "@/components/owner/financial-tab"
+import { QualityTab } from "@/components/owner/quality-tab"
+import { OperationalTab } from "@/components/owner/operational-tab"
 import { AIDiagnosisModal } from "@/components/owner/ai-diagnosis-modal"
 import { QCModal } from "@/components/owner/qc-modal"
 import { Submission, KilnStatusItem } from "@/types/bridge"
@@ -198,9 +202,19 @@ export default function OwnerPage() {
           <div className="bg-white/65 backdrop-blur-xl border border-slate-900/10 rounded-3xl p-5 md:p-6 shadow-[0_25px_50px_rgba(30,41,59,0.1),inset_0_1px_0_rgba(255,255,255,0.8)]">
             <h1 className="text-xl md:text-2xl font-mono font-black text-[#030b85] uppercase tracking-tight mb-5 pb-3 border-b border-slate-900/10 flex items-center gap-2">
               {activeTab === "dashboard" && "Dashboard Utama"}
+              {activeTab === "financial" && "Financial & Cost Analytics"}
+              {activeTab === "quality" && "Quality Metrics"}
+              {activeTab === "operational" && "Operational Metrics"}
               {activeTab === "ai" && "Decision Intelligence & AI Recipe Optimizer"}
-              {activeTab === "mandors" && "Manajemen Operator Mandor"}
+              {activeTab === "alerts" && "Alerts & Anomalies"}
+              {activeTab === "visualisasi" && "Data Visualisasi 3D"}
+              {activeTab === "employee" && "Employee Performance & KPI"}
+              {activeTab === "inventory" && "Inventory & Materials Management"}
+              {activeTab === "target" && "Target & Goals Tracking"}
+              {activeTab === "sustainability" && "Sustainability & ESG Reporting"}
+              {activeTab === "audit_trail" && "Security & Audit Trail"}
               {activeTab === "report" && "Laporan Operasional Produksi"}
+              {activeTab === "factory_map" && "Factory Interactive Map"}
               {activeTab === "settings" && "Pengaturan Konfigurasi Pabrik"}
             </h1>
 
@@ -213,11 +227,27 @@ export default function OwnerPage() {
               />
             )}
 
+            {activeTab === "financial" && <FinancialTab submissions={submissions} />}
+
+            {activeTab === "quality" && <QualityTab submissions={submissions} />}
+
+            {activeTab === "operational" && <OperationalTab submissions={submissions} />}
+
             {activeTab === "ai" && <DecisionIntelligenceTab />}
 
-            {activeTab === "mandors" && <MandorManagementTab />}
+            {activeTab === "employee" && <MandorManagementTab />}
+
+            {activeTab === "alerts" && <AlertsTab />}
 
             {activeTab === "report" && <ReportTab submissions={submissions} />}
+
+            {/* Placeholders for other tabs */}
+            {["visualisasi", "inventory", "target", "sustainability", "audit_trail", "factory_map"].includes(activeTab) && (
+              <div className="bg-white/60 border border-slate-900/10 rounded-2xl p-10 text-center">
+                <h3 className="font-mono font-extrabold text-slate-700 text-lg mb-2">Module Under Construction</h3>
+                <p className="font-mono text-sm text-slate-500">This module is currently being migrated from the original prototype.</p>
+              </div>
+            )}
 
             {activeTab === "settings" && (
               <div className="space-y-4 bg-white/60 border border-slate-900/10 rounded-2xl p-5 font-mono text-xs text-slate-700">

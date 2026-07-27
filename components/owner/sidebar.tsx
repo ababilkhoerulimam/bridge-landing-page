@@ -9,9 +9,34 @@ import {
   FileText,
   Settings,
   LogOut,
+  Coins,
+  LineChart,
+  Factory,
+  AlertTriangle,
+  BarChart,
+  Boxes,
+  Target,
+  Leaf,
+  Shield,
+  Map,
 } from "lucide-react"
 
-export type ActiveTab = "dashboard" | "ai" | "mandors" | "report" | "settings"
+export type ActiveTab = 
+  | "dashboard" 
+  | "financial"
+  | "quality"
+  | "operational"
+  | "ai" 
+  | "alerts"
+  | "visualisasi"
+  | "employee" 
+  | "inventory"
+  | "target"
+  | "sustainability"
+  | "audit_trail"
+  | "report" 
+  | "factory_map"
+  | "settings"
 
 interface SidebarProps {
   activeTab: ActiveTab
@@ -20,11 +45,21 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
-  const menuItems: Array<{ id: ActiveTab; label: string; icon: any }> = [
+  const menuItems: Array<{ id: ActiveTab; label: string; icon: any; badge?: number }> = [
     { id: "dashboard", label: "Dashboard Utama", icon: LayoutDashboard },
+    { id: "financial", label: "Financial & Cost", icon: Coins },
+    { id: "quality", label: "Quality Metrics", icon: LineChart },
+    { id: "operational", label: "Operational", icon: Factory },
     { id: "ai", label: "Decision Intelligence", icon: Brain },
-    { id: "mandors", label: "Mandor & Tasks", icon: Users },
-    { id: "report", label: "Laporan Produksi", icon: FileText },
+    { id: "alerts", label: "Alerts & Anomalies", icon: AlertTriangle, badge: 2 },
+    { id: "visualisasi", label: "Visualisasi", icon: BarChart },
+    { id: "employee", label: "Employee Performance", icon: Users },
+    { id: "inventory", label: "Inventory & Materials", icon: Boxes },
+    { id: "target", label: "Target & Goals", icon: Target },
+    { id: "sustainability", label: "Sustainability", icon: Leaf },
+    { id: "audit_trail", label: "Audit Trail", icon: Shield },
+    { id: "report", label: "Reports Export", icon: FileText },
+    { id: "factory_map", label: "Factory Map", icon: Map },
     { id: "settings", label: "Pengaturan Pabrik", icon: Settings },
   ]
 
@@ -54,14 +89,21 @@ export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-mono text-xs font-bold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl font-mono text-xs font-bold transition-all duration-200 cursor-pointer ${
                 isActive
                   ? "bg-[#030b85]/10 text-[#030b85] border border-[#030b85]/25"
                   : "text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 border border-transparent"
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? "text-[#030b85]" : "text-slate-500"}`} />
-              <span>{item.label}</span>
+              <div className="flex items-center gap-3">
+                <Icon className={`w-4 h-4 ${isActive ? "text-[#030b85]" : "text-slate-500"}`} />
+                <span>{item.label}</span>
+              </div>
+              {item.badge && item.badge > 0 && (
+                <span className="text-[9px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded-full">
+                  {item.badge}
+                </span>
+              )}
             </button>
           )
         })}
