@@ -15,6 +15,14 @@ import { AlertsTab } from "@/components/owner/alerts-tab"
 import { FinancialTab } from "@/components/owner/financial-tab"
 import { QualityTab } from "@/components/owner/quality-tab"
 import { OperationalTab } from "@/components/owner/operational-tab"
+import { VisualisasiTab } from "@/components/owner/visualisasi-tab"
+import { EmployeeTab } from "@/components/owner/employee-tab"
+import { InventoryTab } from "@/components/owner/inventory-tab"
+import { TargetTab } from "@/components/owner/target-tab"
+import { SustainabilityTab } from "@/components/owner/sustainability-tab"
+import { AuditTab } from "@/components/owner/audit-tab"
+import { FactoryMapTab } from "@/components/owner/factory-map-tab"
+import { ReportsTab } from "@/components/owner/reports-tab"
 import { AIDiagnosisModal } from "@/components/owner/ai-diagnosis-modal"
 import { QCModal } from "@/components/owner/qc-modal"
 import { Submission, KilnStatusItem } from "@/types/bridge"
@@ -235,19 +243,18 @@ export default function OwnerPage() {
 
             {activeTab === "ai" && <DecisionIntelligenceTab />}
 
-            {activeTab === "employee" && <MandorManagementTab />}
+            {activeTab === "employee" && <EmployeeTab submissions={submissions} />}
 
             {activeTab === "alerts" && <AlertsTab />}
 
-            {activeTab === "report" && <ReportTab submissions={submissions} />}
+            {activeTab === "report" && <ReportsTab />}
 
-            {/* Placeholders for other tabs */}
-            {["visualisasi", "inventory", "target", "sustainability", "audit_trail", "factory_map"].includes(activeTab) && (
-              <div className="bg-white/60 border border-slate-900/10 rounded-2xl p-10 text-center">
-                <h3 className="font-mono font-extrabold text-slate-700 text-lg mb-2">Module Under Construction</h3>
-                <p className="font-mono text-sm text-slate-500">This module is currently being migrated from the original prototype.</p>
-              </div>
-            )}
+            {activeTab === "visualisasi" && <VisualisasiTab bdriScore={85} phase3Unlocked={true} complianceScore={92} quality={88} batchTrace={[]} />}
+            {activeTab === "inventory" && <InventoryTab />}
+            {activeTab === "target" && <TargetTab />}
+            {activeTab === "sustainability" && <SustainabilityTab />}
+            {activeTab === "audit_trail" && <AuditTab submissions={submissions} />}
+            {activeTab === "factory_map" && <FactoryMapTab />}
 
             {activeTab === "settings" && (
               <div className="space-y-4 bg-white/60 border border-slate-900/10 rounded-2xl p-5 font-mono text-xs text-slate-700">
