@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
+import Image from "next/image"
 import { useLenis } from "lenis/react"
 import { Menu, X } from "lucide-react"
 
@@ -55,15 +56,22 @@ export function Navigation() {
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id)
     if (element && lenis) {
-      lenis.scrollTo(element, { offset: -100 })
+      lenis.scrollTo(element as HTMLElement, { offset: -80 })
+    } else if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+    if (id === "#demo-form") {
+      const input = element?.querySelector("input")
+      if (input) {
+        setTimeout(() => input.focus(), 600)
+      }
     }
     setMobileMenuOpen(false)
   }
 
   const navLinks = [
-    { label: "Home", href: "#hero" },
-    { label: "Product", href: "#product" },
     { label: "Features", href: "#features" },
+    { label: "Products", href: "#flavor" },
     { label: "Clients", href: "#clients" },
     { label: "Pricing", href: "#pricing" },
   ]
@@ -79,31 +87,26 @@ export function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <motion.span
-            className="flex items-center gap-2"
+          <motion.div
+            className="flex items-center gap-2.5"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            {/* Bridge arch SVG icon */}
-            <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="0" y="16" width="28" height="3" rx="1.5" fill="#3b82f6" />
-              <path
-                d="M2 16 C2 8, 12 2, 14 2 C16 2, 26 8, 26 16"
-                stroke="#3b82f6"
-                strokeWidth="2.5"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <line x1="9" y1="9" x2="9" y2="16" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
-              <line x1="14" y1="5" x2="14" y2="16" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
-              <line x1="19" y1="9" x2="19" y2="16" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Image
+              src="/bridge-icon.png"
+              alt="BRIDGE Logo"
+              width={34}
+              height={34}
+              className={`w-8 h-8 object-contain transition-all duration-300 ${
+                scrolled ? "brightness-200 drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]" : ""
+              }`}
+            />
             <span
               className={`text-2xl font-black tracking-tighter ${scrolled ? "text-white" : "text-[#121212]"}`}
             >
               BRIDGE
             </span>
-          </motion.span>
+          </motion.div>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
@@ -132,6 +135,7 @@ export function Navigation() {
         </div>
 
         <motion.button
+          onClick={() => scrollToSection("#demo-form")}
           className="hidden md:block bg-[#3b82f6] text-white px-6 py-2.5 rounded-full font-bold text-sm tracking-wide relative overflow-hidden"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -160,6 +164,7 @@ export function Navigation() {
           className="md:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           whileTap={{ scale: 0.9 }}
+          aria-label="Toggle Navigation Menu"
         >
           <AnimatePresence mode="wait">
             {mobileMenuOpen ? (
@@ -190,30 +195,29 @@ export function Navigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
-            className="md:hidden bg-[#121212]/95 backdrop-blur-md border-t border-white/10 overflow-hidden"
+            variants={mobileMenuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="md:hidden bg-[#121212]/95 backdrop-blur-md border-b border-white/10 overflow-hidden px-6 py-4"
           >
-            <div className="px-6 py-4 space-y-4">
+            <div className="flex flex-col gap-4">
               {navLinks.map((item, i) => (
                 <motion.button
                   key={item.label}
+                  custom={i}
+                  variants={linkVariants}
                   onClick={() => scrollToSection(item.href)}
-                  className="block w-full text-left text-white/80 hover:text-[#3b82f6] text-lg font-medium py-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
+                  className="text-left text-white/80 hover:text-[#3b82f6] text-lg font-medium py-2 transition-colors"
                 >
                   {item.label}
                 </motion.button>
               ))}
               <motion.button
-                className="w-full bg-[#3b82f6] text-white px-6 py-3 rounded-full font-bold text-sm tracking-wide mt-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                custom={navLinks.length}
+                variants={linkVariants}
+                onClick={() => scrollToSection("#demo-form")}
+                className="bg-[#3b82f6] text-white py-3 rounded-full font-bold text-center mt-2"
               >
                 Request Demo
               </motion.button>

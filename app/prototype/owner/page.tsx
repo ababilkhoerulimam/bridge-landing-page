@@ -9,7 +9,7 @@ export default function OwnerPage() {
   return (
     <main className="w-full h-screen bg-[#eef2f9] overflow-hidden">
       <iframe
-        src="/prototype/Owner.html"
+        src="/prototype/owner.html"
         title="BRIDGE Owner Dashboard"
         className="w-full h-full border-0"
       />

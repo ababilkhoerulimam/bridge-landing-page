@@ -5,6 +5,7 @@ import type React from "react"
 import { motion, AnimatePresence, useSpring } from "framer-motion"
 import { useState } from "react"
 import Image from "next/image"
+import { useLenis } from "lenis/react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const products = [
@@ -78,6 +79,7 @@ export function FlavorCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [[page, direction], setPage] = useState([0, 0])
   const currentProduct = products[currentIndex]
+  const lenis = useLenis()
 
   const rotateX = useSpring(0, { stiffness: 150, damping: 20 })
   const rotateY = useSpring(0, { stiffness: 150, damping: 20 })
@@ -95,6 +97,19 @@ export function FlavorCarousel() {
   const handleMouseLeave = () => {
     rotateX.set(0)
     rotateY.set(0)
+  }
+
+  const scrollToDemo = () => {
+    const element = document.querySelector("#demo-form")
+    if (element && lenis) {
+      lenis.scrollTo(element as HTMLElement, { offset: -80 })
+    } else if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+    const input = element?.querySelector("input")
+    if (input) {
+      setTimeout(() => input.focus(), 600)
+    }
   }
 
   const paginate = (newDirection: number) => {
@@ -177,33 +192,30 @@ export function FlavorCarousel() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="relative w-full max-w-3xl"
+                className="relative w-full max-w-4xl"
                 style={{ perspective: 1000 }}
               >
                 <motion.div
-                  className="bg-white rounded-3xl p-6 md:p-8 border-2 border-[#121212]/10 shadow-xl"
+                  className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-[#121212]/10 shadow-2xl relative overflow-hidden"
                   style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
                   onMouseMove={handleMouseMove}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <div className="grid md:grid-cols-2 gap-6 items-center">
-                    <motion.div
-                      className="relative aspect-[4/3] flex items-center justify-center"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
+                  <div className="grid md:grid-cols-12 gap-8 items-center">
+                    <div className="md:col-span-5 relative h-64 md:h-80 w-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 p-4">
                       <Image
                         src={currentProduct.image || "/placeholder.svg"}
                         alt={currentProduct.name}
                         fill
-                        className="object-contain rounded-xl"
+                        className="object-contain p-2"
+                        priority
                       />
-                    </motion.div>
+                    </div>
 
-                    <div className="space-y-4">
+                    <div className="md:col-span-7 space-y-4">
                       <div>
                         <motion.span
-                          className="font-mono text-xs tracking-widest"
+                          className="text-xs font-mono font-bold tracking-widest uppercase block"
                           style={{ color: currentProduct.accentColor }}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
@@ -239,7 +251,7 @@ export function FlavorCarousel() {
                         {currentProduct.badges.map((badge) => (
                           <span
                             key={badge}
-                            className="px-2 py-1 rounded-full text-xs font-mono"
+                            className="px-2.5 py-1 rounded-full text-xs font-mono font-medium"
                             style={{
                               backgroundColor: `${currentProduct.accentColor}18`,
                               color: currentProduct.accentColor,
@@ -251,6 +263,7 @@ export function FlavorCarousel() {
                       </motion.div>
 
                       <motion.button
+                        onClick={scrollToDemo}
                         className="px-6 py-3 rounded-full font-bold text-sm tracking-wide w-full md:w-auto relative overflow-hidden text-white"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -265,7 +278,7 @@ export function FlavorCarousel() {
                           whileHover={{ x: "100%" }}
                           transition={{ duration: 0.5 }}
                         />
-                        <span className="relative z-10">Request Access</span>
+                        <span className="relative z-10">Request a Demo</span>
                       </motion.button>
                     </div>
                   </div>

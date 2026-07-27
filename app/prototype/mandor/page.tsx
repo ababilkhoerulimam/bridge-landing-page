@@ -9,7 +9,7 @@ export default function MandorPage() {
   return (
     <main className="w-full h-screen bg-[#eef2f9] overflow-hidden">
       <iframe
-        src="/prototype/Mandor.html"
+        src="/prototype/mandor.html"
         title="BRIDGE Tablet Ops (Mandor)"
         className="w-full h-full border-0"
       />
