@@ -4,11 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body, button, input, select, textarea, table, td, th, span, p, label {
+/* Global Typography Specification Override */
+body, button, input, select, textarea, table, td, th, span, p, label, div, a, .font-mono, .font-sans {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-h1, h2, h3, h4, h5, h6, .font-outfit, .page-title, .metric-value, .sidebar-brand span {
+h1, h2, h3, h4, h5, h6, .font-outfit, .page-title, .metric-value, .sidebar-brand span, .metric-card .metric-value, .sidebar-brand, .brand-logo {
   font-family: 'Outfit', sans-serif !important;
 }
 

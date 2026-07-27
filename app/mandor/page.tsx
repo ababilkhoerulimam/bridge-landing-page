@@ -67,7 +67,7 @@ export default function MandorPage() {
                 priority
               />
             </Link>
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-[#030b85]/10 text-[#030b85] rounded-full text-[11px] font-mono font-extrabold uppercase">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-[#030b85]/10 text-[#030b85] rounded-full text-[11px] font-sans font-extrabold uppercase">
               <Tablet className="w-3.5 h-3.5" /> Tablet Ops Portal
             </div>
           </div>
@@ -77,8 +77,8 @@ export default function MandorPage() {
 
             {activeMandor && (
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold text-slate-700 bg-white/80 border border-slate-200 px-3 py-1.5 rounded-full">
-                  Mandor: <strong className="text-[#030b85]">{activeMandor}</strong>
+                <span className="text-xs font-sans font-bold text-slate-700 bg-white/80 border border-slate-200 px-3 py-1.5 rounded-full">
+                  Mandor: <strong className="text-[#030b85] font-outfit">{activeMandor}</strong>
                 </span>
                 <button
                   onClick={handleLogout}
@@ -112,7 +112,7 @@ export default function MandorPage() {
                 <button
                   key={m.id}
                   onClick={() => setSelectedMachineId(m.id)}
-                  className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-xl text-xs font-outfit font-extrabold transition-all cursor-pointer ${
                     selectedMachineId === m.id
                       ? "bg-[#030b85] text-white shadow-md"
                       : "bg-white/60 text-slate-700 hover:bg-white/90 border border-slate-900/10"
