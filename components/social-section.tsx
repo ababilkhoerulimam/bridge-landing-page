@@ -2,7 +2,6 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import Link from "next/link"
 import Image from "next/image"
 
 const fieldPosts = [
@@ -137,9 +136,14 @@ export function SocialSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
         >
-          <Link
-            href="/prototype"
+          <motion.a
+            href="../WEB nya/WEB nya/Mandor.html"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[#3b82f6] text-white px-6 py-3 rounded-full font-bold text-sm tracking-wide relative overflow-hidden group"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
@@ -156,7 +160,7 @@ export function SocialSection() {
               />
             </svg>
             <span className="relative z-10">Explore the Prototype</span>
-          </Link>
+          </motion.a>
         </motion.div>
       </div>
     </section>

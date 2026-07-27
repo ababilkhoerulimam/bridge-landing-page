@@ -209,3 +209,17 @@
   pointer-events: none;
   animation: grain 8s steps(10) infinite;
 }
+
+/* Hide scrollbar globally for Chrome, Safari, Edge, and Firefox while keeping scroll function */
+html,
+body,
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}

@@ -56,7 +56,7 @@ export function Navigation() {
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id)
     if (element && lenis) {
-      lenis.scrollTo(element as HTMLElement, { offset: -80 })
+      lenis.scrollTo(element, { offset: -80 })
     } else if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
@@ -164,7 +164,6 @@ export function Navigation() {
           className="md:hidden p-2"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           whileTap={{ scale: 0.9 }}
-          aria-label="Toggle Navigation Menu"
         >
           <AnimatePresence mode="wait">
             {mobileMenuOpen ? (

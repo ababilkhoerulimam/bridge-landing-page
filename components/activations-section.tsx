@@ -2,32 +2,15 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useState } from "react"
-import Link from "next/link"
 import { Factory, Users, BarChart2, Building2, X, MessageSquare, Mail } from "lucide-react"
 
-type ActivationItem = {
-  id: string
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  description: string
-  cta: string
-  href: string
-  modalBadge: string
-  modalTitle: string
-  modalSubtitle: string | null
-  modalDesc: string
-  modalBenefitsTitle: string | null
-  modalBenefits: string[]
-}
-
-const activations: ActivationItem[] = [
+const activations = [
   {
     id: "ceramics",
     icon: Factory,
     title: "Ceramic & Tile Factories",
     description: "Track kiln temperatures, clay ratios, and batch outputs with zero paper.",
     cta: "See Case Study",
-    href: "/prototype",
     modalBadge: "INDUSTRY CASE STUDY",
     modalTitle: "Case Study Results: Ceramic & Tile Industry",
     modalSubtitle: null,
@@ -42,7 +25,6 @@ const activations: ActivationItem[] = [
     title: "Mandors & Supervisors",
     description: "Log shifts in under 2 minutes. PIN sign-off. No typing required.",
     cta: "See the App",
-    href: "/prototype/mandor",
     modalBadge: "USER FLOW",
     modalTitle: "Foreman Application (BRIDGE Collect)",
     modalSubtitle: null,
@@ -57,7 +39,6 @@ const activations: ActivationItem[] = [
     title: "Factory Owners",
     description: "Real-time OEE dashboard, yield diagnostics, and prescriptive recommendations.",
     cta: "See Dashboard",
-    href: "/prototype/owner",
     modalBadge: "EXECUTIVE SUITE",
     modalTitle: "Real-Time Owner Intelligence Dashboard",
     modalSubtitle: null,
@@ -72,7 +53,6 @@ const activations: ActivationItem[] = [
     title: "Industry Associations",
     description: "Support your IKM cluster with standardized digital production records.",
     cta: "Partner With Us",
-    href: "/prototype",
     modalBadge: "GOVERNMENT & ASSOCIATION PARTNERSHIP",
     modalTitle: "Industry Association & Government Partnership",
     modalSubtitle: "Accelerating Digital Transformation for National Manufacturing & SMEs",
@@ -115,7 +95,7 @@ const itemVariants = {
 export function ActivationsSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
-  const [selectedActivation, setSelectedActivation] = useState<ActivationItem | null>(null)
+  const [selectedActivation, setSelectedActivation] = useState<(typeof activations)[0] | null>(null)
 
   return (
     <section id="clients" className="relative py-16 bg-white overflow-hidden">
@@ -209,10 +189,14 @@ export function ActivationsSection() {
               </div>
 
               <div className="relative z-10 pt-2">
-                <Link
-                  href={activation.href}
-                  onClick={(e) => e.stopPropagation()}
+                <motion.button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedActivation(activation)
+                  }}
                   className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
+                  whileHover={{ x: 4 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   {activation.cta}
                   <motion.svg
@@ -226,7 +210,7 @@ export function ActivationsSection() {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </motion.svg>
-                </Link>
+                </motion.button>
               </div>
             </motion.div>
           ))}
@@ -276,7 +260,6 @@ export function ActivationsSection() {
               <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-1">
                 {selectedActivation.modalTitle}
               </h3>
-
               {selectedActivation.modalSubtitle && (
                 <p className="text-xs font-mono text-slate-600 mb-4">
                   {selectedActivation.modalSubtitle}
@@ -331,9 +314,9 @@ export function ActivationsSection() {
                   </a>
                   <a
                     href="mailto:BridgeInfradataIndonesia@gmail.com?subject=Inquiry%20BRIDGE%20Industry%20Association%20Partnership"
-                    className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-3.5 px-4 rounded-xl font-bold text-xs font-mono flex items-center justify-center gap-2 transition-all duration-300 border border-slate-700"
+                    className="flex-1 bg-white/10 hover:bg-white/20 text-white py-3.5 px-4 rounded-xl font-bold text-xs font-mono flex items-center justify-center gap-2 transition-all duration-300 border border-white/20 backdrop-blur-md"
                   >
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-4 h-4 text-[#3b82f6]" />
                     BridgeInfradataIndonesia@gmail.com
                   </a>
                 </div>
