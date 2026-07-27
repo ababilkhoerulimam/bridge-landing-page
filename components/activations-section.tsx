@@ -2,6 +2,7 @@
 
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useRef, useState } from "react"
+import Link from "next/link"
 import { Factory, Users, BarChart2, Building2, X, MessageSquare, Mail } from "lucide-react"
 
 const activations = [
@@ -189,28 +190,42 @@ export function ActivationsSection() {
               </div>
 
               <div className="relative z-10 pt-2">
-                <motion.button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setSelectedActivation(activation)
-                  }}
-                  className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
-                  whileHover={{ x: 4 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  {activation.cta}
-                  <motion.svg
-                    className="w-3 h-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    initial={{ x: 0 }}
-                    whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                {activation.id === "mandors" ? (
+                  <Link
+                    href="/mandor"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </motion.svg>
-                </motion.button>
+                    <span>{activation.cta}</span>
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                ) : activation.id === "owners" ? (
+                  <Link
+                    href="/owner"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300"
+                  >
+                    <span>{activation.cta}</span>
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedActivation(activation)
+                    }}
+                    className="flex items-center gap-2 text-[#3b82f6] group-hover:text-white font-bold text-xs tracking-wide transition-colors duration-300 cursor-pointer"
+                  >
+                    <span>{activation.cta}</span>
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </motion.div>
           ))}

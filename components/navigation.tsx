@@ -15,7 +15,7 @@ const linkVariants = {
     transition: {
       delay: i * 0.1,
       duration: 0.4,
-      ease: [0.25, 0.4, 0.25, 1],
+      ease: [0.25, 0.4, 0.25, 1] as const,
     },
   }),
 }
@@ -27,7 +27,7 @@ const mobileMenuVariants = {
     height: "auto",
     transition: {
       duration: 0.3,
-      ease: [0.25, 0.4, 0.25, 1],
+      ease: [0.25, 0.4, 0.25, 1] as const,
     },
   },
   exit: {
@@ -35,7 +35,7 @@ const mobileMenuVariants = {
     height: 0,
     transition: {
       duration: 0.2,
-      ease: [0.25, 0.4, 0.25, 1],
+      ease: [0.25, 0.4, 0.25, 1] as const,
     },
   },
 }
@@ -56,7 +56,7 @@ export function Navigation() {
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id)
     if (element && lenis) {
-      lenis.scrollTo(element, { offset: -80 })
+      lenis.scrollTo(element as HTMLElement, { offset: -80 })
     } else if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }

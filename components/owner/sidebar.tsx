@@ -1,0 +1,82 @@
+"use client"
+
+import Image from "next/image"
+import Link from "next/link"
+import {
+  LayoutDashboard,
+  Brain,
+  Users,
+  FileText,
+  Settings,
+  LogOut,
+} from "lucide-react"
+
+export type ActiveTab = "dashboard" | "ai" | "mandors" | "report" | "settings"
+
+interface SidebarProps {
+  activeTab: ActiveTab
+  setActiveTab: (tab: ActiveTab) => void
+  onLogout: () => void
+}
+
+export function Sidebar({ activeTab, setActiveTab, onLogout }: SidebarProps) {
+  const menuItems: Array<{ id: ActiveTab; label: string; icon: any }> = [
+    { id: "dashboard", label: "Dashboard Utama", icon: LayoutDashboard },
+    { id: "ai", label: "Decision Intelligence", icon: Brain },
+    { id: "mandors", label: "Mandor & Tasks", icon: Users },
+    { id: "report", label: "Laporan Produksi", icon: FileText },
+    { id: "settings", label: "Pengaturan Pabrik", icon: Settings },
+  ]
+
+  return (
+    <aside className="w-64 bg-white/65 backdrop-blur-xl border border-slate-900/10 rounded-3xl p-5 shadow-[0_25px_50px_rgba(30,41,59,0.1),inset_0_1px_0_rgba(255,255,255,0.8)] flex flex-col h-[calc(100vh-40px)] sticky top-5 shrink-0 overflow-y-auto">
+      {/* Brand Logo */}
+      <div className="flex items-center gap-3 pb-4 border-b border-slate-900/10 mb-4 shrink-0">
+        <Link href="/" className="hover:opacity-80 transition-opacity">
+          <Image
+            src="/bridge-logo.png"
+            alt="BRIDGE Logo"
+            width={130}
+            height={36}
+            className="w-32 h-auto"
+            priority
+          />
+        </Link>
+      </div>
+
+      {/* Menu Navigation */}
+      <nav className="flex flex-col gap-1.5 flex-1">
+        {menuItems.map((item) => {
+          const Icon = item.icon
+          const isActive = activeTab === item.id
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-mono text-xs font-bold transition-all duration-200 cursor-pointer ${
+                isActive
+                  ? "bg-[#030b85]/10 text-[#030b85] border border-[#030b85]/25"
+                  : "text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 border border-transparent"
+              }`}
+            >
+              <Icon className={`w-4 h-4 ${isActive ? "text-[#030b85]" : "text-slate-500"}`} />
+              <span>{item.label}</span>
+            </button>
+          )
+        })}
+      </nav>
+
+      {/* Sidebar Footer & Logout */}
+      <div className="pt-3 border-t border-slate-900/10 mt-auto shrink-0 text-center">
+        <div className="text-[10px] font-mono text-slate-500 mb-2">PT BRIDGE INFRADATA</div>
+        <button
+          onClick={onLogout}
+          className="w-full py-2 px-3 border border-rose-200 rounded-xl bg-rose-50/50 hover:bg-rose-100 text-rose-700 font-mono text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <LogOut className="w-3.5 h-3.5" /> Keluar Dashboard
+        </button>
+      </div>
+    </aside>
+  )
+}

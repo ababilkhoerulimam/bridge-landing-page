@@ -3,6 +3,7 @@
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import Image from "next/image"
+import Link from "next/link"
 
 const fieldPosts = [
   { image: "/entrepreneur-startup-office-meeting.jpg", stat: "Plered Cluster" },
@@ -31,7 +32,7 @@ const itemVariants = {
     scale: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
       damping: 20,
     },
@@ -136,21 +137,10 @@ export function SocialSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
         >
-          <motion.a
-            href="../WEB nya/WEB nya/Mandor.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#3b82f6] text-white px-6 py-3 rounded-full font-bold text-sm tracking-wide relative overflow-hidden group"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          <Link
+            href="/prototype"
+            className="flex items-center gap-2 bg-[#3b82f6] text-white px-6 py-3 rounded-full font-bold text-sm tracking-wide relative overflow-hidden group hover:scale-105 transition-transform"
           >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"
-              whileHover={{ x: "200%" }}
-              transition={{ duration: 0.6 }}
-            />
-            {/* External link icon */}
             <svg className="w-4 h-4 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -160,7 +150,7 @@ export function SocialSection() {
               />
             </svg>
             <span className="relative z-10">Explore the Prototype</span>
-          </motion.a>
+          </Link>
         </motion.div>
       </div>
     </section>
