@@ -1,7 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+body, button, input, select, textarea, table, td, th, span, p, label {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6, .font-outfit, .page-title, .metric-value, .sidebar-brand span {
+  font-family: 'Outfit', sans-serif !important;
+}
 
 :root {
   --background: oklch(1 0 0);
