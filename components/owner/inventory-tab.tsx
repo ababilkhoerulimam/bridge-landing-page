@@ -4,7 +4,7 @@ import {
   PackageSearch, 
   Mountain, 
   Gem, 
-  Cubes, 
+  Boxes, 
   AlertTriangle, 
   Check, 
   Table2, 
@@ -57,7 +57,7 @@ export function InventoryTab({ inventoryStatus }: InventoryTabProps) {
     },
     {
       name: 'Quartz (Silika)',
-      icon: Cubes,
+      icon: Boxes,
       color: '#059669',
       colorBg: 'rgba(5,150,105,0.08)',
       stock: status.stock.quartz,

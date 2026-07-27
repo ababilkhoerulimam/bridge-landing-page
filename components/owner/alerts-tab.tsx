@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { AlertTriangle, Bell, Edit3, Save, X, Brain, CheckCircle2, Send, UserShield, Clock } from "lucide-react"
+import { AlertTriangle, Bell, Edit3, Save, X, Brain, CheckCircle2, Send, ShieldCheck as UserShield, Clock } from "lucide-react"
 
 interface AlertItem {
   id: string

@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { Industry, Factory, TrendingUp, TrendingDown, Cubes, BarChart3, ChartLine, Table2 } from "lucide-react"
+import { Building2 as Industry, Factory, TrendingUp, TrendingDown, Boxes as Cubes, BarChart3, LineChart as ChartLine, Table2 } from "lucide-react"
 import {
   ResponsiveContainer,
   LineChart,
