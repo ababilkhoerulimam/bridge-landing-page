@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Brain,
@@ -14,6 +14,7 @@ import {
   Info,
   X,
   Loader2,
+  Sparkles,
 } from "lucide-react"
 
 const formatRupiah = (val: number) => "Rp " + new Intl.NumberFormat("id-ID").format(val)
@@ -32,13 +33,13 @@ interface BatchItem {
 }
 
 const DEFAULT_BATCHES: BatchItem[] = [
-  { date: "2026-07-27", shift: "Malam", grade_a: 91.5, reject: 10, batch_count: 296, clay: 50, feldspar: 25, quartz: 25, quality_score: 91.5, expected_savings: 15000000 },
-  { date: "2026-07-26", shift: "Siang", grade_a: 78.9, reject: 2, batch_count: 281, clay: 52, feldspar: 24, quartz: 24, quality_score: 78.9, expected_savings: 12000000 },
-  { date: "2026-07-25", shift: "Siang", grade_a: 77.4, reject: 15, batch_count: 242, clay: 48, feldspar: 26, quartz: 26, quality_score: 77.4, expected_savings: 11000000 },
-  { date: "2026-07-24", shift: "Pagi", grade_a: 80.2, reject: 15, batch_count: 232, clay: 51, feldspar: 25, quartz: 24, quality_score: 80.2, expected_savings: 13500000 },
-  { date: "2026-07-23", shift: "Malam", grade_a: 88.0, reject: 3, batch_count: 258, clay: 50, feldspar: 25, quartz: 25, quality_score: 88.0, expected_savings: 14800000 },
-  { date: "2026-07-22", shift: "Pagi", grade_a: 75.1, reject: 9, batch_count: 250, clay: 54, feldspar: 23, quartz: 23, quality_score: 75.1, expected_savings: 10500000 },
-  { date: "2026-07-21", shift: "Pagi", grade_a: 75.0, reject: 8, batch_count: 237, clay: 53, feldspar: 24, quartz: 23, quality_score: 75.0, expected_savings: 10200000 },
+  { date: "2026-07-27", shift: "Malam", grade_a: 95.8, reject: 4, batch_count: 296, clay: 50, feldspar: 25, quartz: 25, quality_score: 95.8, expected_savings: 18700000 },
+  { date: "2026-07-26", shift: "Siang", grade_a: 78.9, reject: 18, batch_count: 281, clay: 52, feldspar: 24, quartz: 24, quality_score: 78.9, expected_savings: 15400000 },
+  { date: "2026-07-25", shift: "Siang", grade_a: 77.4, reject: 22, batch_count: 242, clay: 48, feldspar: 26, quartz: 26, quality_score: 77.4, expected_savings: 15100000 },
+  { date: "2026-07-24", shift: "Pagi", grade_a: 80.2, reject: 19, batch_count: 232, clay: 51, feldspar: 25, quartz: 24, quality_score: 80.2, expected_savings: 15600000 },
+  { date: "2026-07-23", shift: "Malam", grade_a: 88.0, reject: 12, batch_count: 258, clay: 50, feldspar: 25, quartz: 25, quality_score: 88.0, expected_savings: 17200000 },
+  { date: "2026-07-22", shift: "Pagi", grade_a: 75.1, reject: 24, batch_count: 250, clay: 54, feldspar: 23, quartz: 23, quality_score: 75.1, expected_savings: 14600000 },
+  { date: "2026-07-21", shift: "Pagi", grade_a: 75.0, reject: 25, batch_count: 237, clay: 53, feldspar: 24, quartz: 23, quality_score: 75.0, expected_savings: 14600000 },
 ]
 
 export function DecisionIntelligenceTab() {
@@ -48,75 +49,63 @@ export function DecisionIntelligenceTab() {
   const [simSpeed, setSimSpeed] = useState(32)
 
   const [loadingPredict, setLoadingPredict] = useState(false)
-  const [predictionResult, setPredictionResult] = useState<{
-    clay: number
-    feldspar: number
-    quartz: number
-    predicted_grade_a: number
-    predicted_defect_rate: number
-    confidence: number
-    expected_savings: number
-  } | null>({
-    clay: 50,
-    feldspar: 25,
-    quartz: 25,
-    predicted_grade_a: 91.5,
-    predicted_defect_rate: 1.9,
-    confidence: 93,
-    expected_savings: 15000000,
-  })
-
+  const [isAiOptimized, setIsAiOptimized] = useState(false)
   const [selectedBatch, setSelectedBatch] = useState<BatchItem | null>(null)
 
-  const handlePredict = () => {
+  // Thermodynamic & Physic loss mathematical calculation (Live dynamic updates as sliders move)
+  const predictionResult = useMemo(() => {
+    const deltaTemp = Math.abs(simTemp - 1175) * 0.05
+    const deltaClay = Math.abs(simClay - 50) * 0.4
+    const deltaSpeed = Math.abs(simSpeed - 32) * 0.3
+
+    const rawYield = 96.0 - deltaTemp - deltaClay - deltaSpeed
+    const predicted_grade_a = Math.max(58.0, Math.min(96.0, parseFloat(rawYield.toFixed(1))))
+    const predicted_defect_rate = Math.max(0.8, parseFloat(((100 - predicted_grade_a) * 0.22).toFixed(1)))
+    const expected_savings = Math.round(predicted_grade_a * 195000)
+
+    const totalDev = (deltaTemp + deltaClay + deltaSpeed) / 3
+    const confidence = Math.max(82, Math.min(96, Math.round(96 - totalDev)))
+
+    return {
+      clay: simClay,
+      feldspar: Math.round((100 - simClay) / 2),
+      quartz: 100 - simClay - Math.round((100 - simClay) / 2),
+      predicted_grade_a,
+      predicted_defect_rate,
+      confidence,
+      expected_savings,
+    }
+  }, [simTemp, simClay, simSpeed])
+
+  // AI Auto-Optimizer: Automatically snaps sliders to optimal sweet spot (1175°C, 50% Clay, 32 RPM)
+  const handleAiOptimize = () => {
     setLoadingPredict(true)
     setTimeout(() => {
-      let gradeA = 91.5
-      if (simTemp < 1100 || simTemp > 1250) gradeA -= Math.abs(simTemp - 1175) * 0.05
-      if (simClay < 45 || simClay > 55) gradeA -= Math.abs(simClay - 50) * 0.4
-      gradeA = Math.max(62.0, Math.min(98.2, parseFloat(gradeA.toFixed(1))))
-      const defect = parseFloat(((100 - gradeA) * 0.22).toFixed(1))
-
-      setPredictionResult({
-        clay: simClay,
-        feldspar: 25,
-        quartz: 25,
-        predicted_grade_a: gradeA,
-        predicted_defect_rate: defect,
-        confidence: 93,
-        expected_savings: Math.round(15000000 * (gradeA / 91.5)),
-      })
+      setSimTemp(1175)
+      setSimClay(50)
+      setSimSpeed(32)
+      setIsAiOptimized(true)
       setLoadingPredict(false)
-    }, 400)
+      setTimeout(() => setIsAiOptimized(false), 3000)
+    }, 450)
   }
 
   const loadScenario = (temp: number, clay: number, speed: number) => {
     setSimTemp(temp)
     setSimClay(clay)
     setSimSpeed(speed)
-
-    let gradeA = 91.5
-    if (temp < 1100 || temp > 1250) gradeA -= Math.abs(temp - 1175) * 0.05
-    if (clay < 45 || clay > 55) gradeA -= Math.abs(clay - 50) * 0.4
-    gradeA = Math.max(62.0, Math.min(98.2, parseFloat(gradeA.toFixed(1))))
-    const defect = parseFloat(((100 - gradeA) * 0.22).toFixed(1))
-
-    setPredictionResult({
-      clay: clay,
-      feldspar: 25,
-      quartz: 25,
-      predicted_grade_a: gradeA,
-      predicted_defect_rate: defect,
-      confidence: 93,
-      expected_savings: Math.round(15000000 * (gradeA / 91.5)),
-    })
   }
 
   return (
     <div className="space-y-5 animate-in font-sans">
       {/* Title */}
-      <div className="text-lg md:text-xl font-outfit font-extrabold text-[#030b85] flex items-center gap-2">
-        <Brain className="w-5 h-5 text-[#030b85]" /> Decision Intelligence
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="text-lg md:text-xl font-outfit font-extrabold text-[#030b85] flex items-center gap-2">
+          <Brain className="w-5 h-5 text-[#030b85]" /> Decision Intelligence & AI Recipe Optimizer
+        </div>
+        <span className="text-[11px] font-sans font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Live Dynamic Simulation Active
+        </span>
       </div>
 
       {/* Simulator Panel Card */}
@@ -147,14 +136,14 @@ export function DecisionIntelligenceTab() {
           </button>
         </div>
 
-        {/* 3 Sliders Grid & Rekomendasi ML Button */}
-        <div className="grid md:grid-cols-2 gap-4 items-end">
+        {/* 3 Sliders Grid & Rekomendasi ML Auto-Optimizer Button */}
+        <div className="grid md:grid-cols-2 gap-5 items-end">
           <div className="space-y-4">
             {/* Slider 1: Zona Suhu */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-sans font-bold text-slate-800">
                 <span>Zona Suhu Pembakaran</span>
-                <span className="text-[#030b85] font-outfit font-bold">{simTemp} °C</span>
+                <span className="text-[#030b85] font-outfit font-extrabold">{simTemp} °C</span>
               </div>
               <input
                 type="range"
@@ -162,15 +151,20 @@ export function DecisionIntelligenceTab() {
                 max={1400}
                 value={simTemp}
                 onChange={(e) => setSimTemp(parseInt(e.target.value))}
-                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg"
+                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg transition-all"
               />
+              <div className="flex justify-between text-[10px] font-sans text-slate-400">
+                <span>850 °C (Dingin)</span>
+                <span className="text-emerald-700 font-bold">1175 °C (Optimal)</span>
+                <span>1400 °C (Panas)</span>
+              </div>
             </div>
 
             {/* Slider 2: Rasio Clay */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-sans font-bold text-slate-800">
                 <span>Rasio Clay (Tanah Liat)</span>
-                <span className="text-[#030b85] font-outfit font-bold">{simClay} %</span>
+                <span className="text-[#030b85] font-outfit font-extrabold">{simClay} %</span>
               </div>
               <input
                 type="range"
@@ -178,15 +172,20 @@ export function DecisionIntelligenceTab() {
                 max={70}
                 value={simClay}
                 onChange={(e) => setSimClay(parseInt(e.target.value))}
-                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg"
+                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg transition-all"
               />
+              <div className="flex justify-between text-[10px] font-sans text-slate-400">
+                <span>30 %</span>
+                <span className="text-emerald-700 font-bold">50 % (Ideal)</span>
+                <span>70 %</span>
+              </div>
             </div>
 
             {/* Slider 3: Kecepatan Pusher */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs font-sans font-bold text-slate-800">
                 <span>Kecepatan Pusher</span>
-                <span className="text-[#030b85] font-outfit font-bold">{simSpeed} RPM</span>
+                <span className="text-[#030b85] font-outfit font-extrabold">{simSpeed} RPM</span>
               </div>
               <input
                 type="range"
@@ -194,23 +193,31 @@ export function DecisionIntelligenceTab() {
                 max={60}
                 value={simSpeed}
                 onChange={(e) => setSimSpeed(parseInt(e.target.value))}
-                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg"
+                className="w-full accent-[#030b85] cursor-pointer h-2 bg-slate-200 rounded-lg transition-all"
               />
+              <div className="flex justify-between text-[10px] font-sans text-slate-400">
+                <span>15 RPM</span>
+                <span className="text-emerald-700 font-bold">32 RPM (Ideal)</span>
+                <span>60 RPM</span>
+              </div>
             </div>
           </div>
 
-          {/* Rekomendasi ML Button */}
-          <div className="flex justify-end pt-2 md:pt-0">
+          {/* Rekomendasi ML Auto-Optimizer Button */}
+          <div className="flex flex-col justify-end gap-2 pt-2 md:pt-0">
+            <p className="text-[11px] font-sans text-slate-500">
+              *Klik <strong className="text-[#030b85]">Rekomendasi ML</strong> untuk otomatis menyelaraskan parameter ke resep dengan Yield terbaik.
+            </p>
             <button
-              onClick={handlePredict}
+              onClick={handleAiOptimize}
               disabled={loadingPredict}
-              className="px-6 py-3 rounded-full bg-gradient-to-r from-[#030b85] to-[#1a3ba8] text-white font-sans font-extrabold text-sm shadow-md hover:shadow-lg hover:opacity-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#030b85] via-[#1a3ba8] to-[#030b85] text-white font-sans font-extrabold text-sm shadow-md hover:shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loadingPredict ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <Bot className="w-4 h-4" /> Rekomendasi ML
+                  <Bot className="w-5 h-5 text-amber-300" /> Rekomendasi ML (Auto-Optimize Yield)
                 </>
               )}
             </button>
@@ -218,70 +225,90 @@ export function DecisionIntelligenceTab() {
         </div>
       </div>
 
-      {/* Output Preskripsi Box */}
-      {predictionResult && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/70 backdrop-blur-xl border border-[#030b85]/20 rounded-2xl p-5 shadow-xs space-y-4"
-        >
-          <div className="text-sm font-outfit font-extrabold text-[#030b85] flex items-center gap-2 border-b border-slate-900/10 pb-2">
+      {/* Output Preskripsi Box (Dynamic Real-time Values) */}
+      <motion.div
+        key={`${simTemp}-${simClay}-${simSpeed}`}
+        initial={{ opacity: 0.8, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`bg-white/70 backdrop-blur-xl border rounded-2xl p-5 shadow-xs space-y-4 transition-all ${
+          isAiOptimized ? "border-emerald-500 ring-2 ring-emerald-400/30" : "border-[#030b85]/20"
+        }`}
+      >
+        <div className="text-sm font-outfit font-extrabold text-[#030b85] flex items-center justify-between border-b border-slate-900/10 pb-2">
+          <div className="flex items-center gap-2">
             <Compass className="w-4 h-4 text-[#030b85]" /> Preskripsi Formula & Rekomendasi ML
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-white/80 border border-slate-200 p-3 rounded-xl">
-              <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
-                Yield Prediksi (Grade A)
-              </span>
-              <span className="text-2xl font-outfit font-black text-emerald-600 block mt-0.5">
-                {predictionResult.predicted_grade_a}%
-              </span>
-            </div>
-
-            <div className="bg-white/80 border border-slate-200 p-3 rounded-xl">
-              <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
-                Defect Rate
-              </span>
-              <span
-                className={`text-2xl font-outfit font-black block mt-0.5 ${
-                  predictionResult.predicted_defect_rate > 5 ? "text-rose-600" : "text-slate-900"
-                }`}
-              >
-                {predictionResult.predicted_defect_rate}%
-              </span>
-            </div>
-
-            <div className="bg-white/80 border border-slate-200 p-3 rounded-xl">
-              <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
-                Penghematan Finansial
-              </span>
-              <span className="text-base font-outfit font-black text-[#030b85] block mt-0.5">
-                {formatRupiah(predictionResult.expected_savings)}
-              </span>
-            </div>
-
-            <div className="bg-white/80 border border-slate-200 p-3 rounded-xl">
-              <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
-                Confidence Score
-              </span>
-              <span className="text-2xl font-outfit font-black text-slate-900 block mt-0.5">
-                {predictionResult.confidence}%
-              </span>
-            </div>
-          </div>
-
-          {/* Formula Recommendation Banner */}
-          <div className="bg-[#030b85]/5 border border-[#030b85]/15 p-3.5 rounded-xl space-y-1">
-            <span className="text-xs font-sans font-extrabold text-[#030b85] uppercase tracking-wider block">
-              REKOMENDASI FORMULA BAHAN BAKU
+          {isAiOptimized && (
+            <span className="text-xs font-sans font-bold text-emerald-700 bg-emerald-100 px-3 py-0.5 rounded-full flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" /> Formula Optimal Diterapkan!
             </span>
-            <span className="text-sm font-sans font-bold text-slate-800 block">
-              Clay: {predictionResult.clay}% · Feldspar: {predictionResult.feldspar}% · Quartz: {predictionResult.quartz}%
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {/* Yield Prediksi */}
+          <div className="bg-white/80 border border-slate-200 p-3.5 rounded-xl">
+            <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
+              Yield Prediksi (Grade A)
+            </span>
+            <span
+              className={`text-2xl font-outfit font-black block mt-0.5 ${
+                predictionResult.predicted_grade_a >= 90
+                  ? "text-emerald-600"
+                  : predictionResult.predicted_grade_a >= 80
+                  ? "text-amber-600"
+                  : "text-rose-600"
+              }`}
+            >
+              {predictionResult.predicted_grade_a}%
             </span>
           </div>
-        </motion.div>
-      )}
+
+          {/* Defect Rate */}
+          <div className="bg-white/80 border border-slate-200 p-3.5 rounded-xl">
+            <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
+              Defect Rate
+            </span>
+            <span
+              className={`text-2xl font-outfit font-black block mt-0.5 ${
+                predictionResult.predicted_defect_rate > 4.0 ? "text-rose-600" : "text-slate-900"
+              }`}
+            >
+              {predictionResult.predicted_defect_rate}%
+            </span>
+          </div>
+
+          {/* Penghematan Finansial */}
+          <div className="bg-white/80 border border-slate-200 p-3.5 rounded-xl">
+            <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
+              Penghematan Finansial
+            </span>
+            <span className="text-base font-outfit font-black text-[#030b85] block mt-0.5">
+              {formatRupiah(predictionResult.expected_savings)}
+            </span>
+          </div>
+
+          {/* Confidence Score */}
+          <div className="bg-white/80 border border-slate-200 p-3.5 rounded-xl">
+            <span className="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-wide block">
+              Confidence Score
+            </span>
+            <span className="text-2xl font-outfit font-black text-slate-900 block mt-0.5">
+              {predictionResult.confidence}%
+            </span>
+          </div>
+        </div>
+
+        {/* Formula Recommendation Banner */}
+        <div className="bg-[#030b85]/5 border border-[#030b85]/15 p-3.5 rounded-xl space-y-1">
+          <span className="text-xs font-sans font-extrabold text-[#030b85] uppercase tracking-wider block">
+            REKOMENDASI FORMULA BAHAN BAKU
+          </span>
+          <span className="text-sm font-sans font-bold text-slate-800 block">
+            Clay: {predictionResult.clay}% · Feldspar: {predictionResult.feldspar}% · Quartz: {predictionResult.quartz}%
+          </span>
+        </div>
+      </motion.div>
 
       {/* Daily Batch Data Table */}
       <div className="bg-white/60 backdrop-blur-xl border border-slate-900/10 rounded-2xl p-5 shadow-xs space-y-3">
@@ -389,7 +416,7 @@ export function DecisionIntelligenceTab() {
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-slate-500 font-medium">COGS Savings</span>
-                  <strong className="text-[#030b85]">{formatRupiah(selectedBatch.expected_savings || 15000000)}</strong>
+                  <strong className="text-[#030b85]">{formatRupiah(selectedBatch.expected_savings || 18700000)}</strong>
                 </div>
               </div>
             </motion.div>
