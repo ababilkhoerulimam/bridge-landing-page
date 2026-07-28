@@ -6,12 +6,12 @@ import Image from "next/image"
 import Link from "next/link"
 
 const fieldPosts = [
-  { image: "/entrepreneur-startup-office-meeting.jpg", stat: "Plered Cluster" },
-  { image: "/athlete-fitness-morning-routine.jpg", stat: "3 Factories" },
-  { image: "/skateboarder-urban-street-sunset.jpg", stat: "West Java" },
-  { image: "/student-studying-library-late-night.jpg", stat: "9 Users" },
-  { image: "/content-creator-streaming-setup-neon.jpg", stat: "Live Data" },
-  { image: "/energy-drink-lifestyle-gym-workout.jpg", stat: "OEE Tracked" },
+  { image: "/Plered Cluster.jpg", stat: "Plered Cluster" },
+  { image: "/3 Factories.jpg", stat: "3 Factories" },
+  { image: "/West Java.jpg", stat: "West Java" },
+  { image: "/9 Users.jpg", stat: "9 Users" },
+  { image: "/Live Data.jpg", stat: "Live Data" },
+  { image: "/OEE Tracked.jpg", stat: "OEE Tracked" },
 ]
 
 const containerVariants = {
