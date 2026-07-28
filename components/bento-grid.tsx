@@ -4,7 +4,7 @@ import type React from "react"
 
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useRef, useState } from "react"
-import { RefreshCw, Clock, ShieldCheck, Brain } from "lucide-react"
+import { RefreshCw, Clock, ShieldCheck, CloudUpload } from "lucide-react"
 
 const features = [
   {
@@ -29,10 +29,10 @@ const features = [
     accent: "#f59e0b",
   },
   {
-    icon: Brain,
-    title: "99%",
-    subtitle: "Uptime Offline",
-    description: "Runs on local device — zero dependency on connectivity",
+    icon: CloudUpload,
+    title: "Auto-Sync",
+    subtitle: "Zero Data Loss Guaranteed",
+    description: "Pencatatan tersimpan aman di lokal saat offline, dan otomatis ter-update ke Owner Dashboard saat sinyal terhubung.",
     accent: "#3b82f6",
   },
 ]
