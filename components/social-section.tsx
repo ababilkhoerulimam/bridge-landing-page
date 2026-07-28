@@ -107,6 +107,7 @@ export function SocialSection() {
                 alt={`Factory field validation — ${post.stat}`}
                 fill
                 className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                unoptimized
               />
               <motion.div
                 className="absolute inset-0 bg-[#3b82f6]/0 group-hover:bg-[#3b82f6]/20 flex items-center justify-center"
