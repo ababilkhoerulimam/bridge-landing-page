@@ -39,6 +39,13 @@ export function Footer() {
 
   return (
     <footer id="pricing" ref={footerRef} className="bg-[#121212] text-white pt-20 pb-8 relative overflow-hidden">
+      {/* Giant Background Watermark Text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
+        <span className="text-[22vw] font-black text-white/[0.035] tracking-tighter uppercase font-outfit leading-none whitespace-nowrap">
+          BRIDGE
+        </span>
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
