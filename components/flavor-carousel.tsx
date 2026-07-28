@@ -194,6 +194,7 @@ export function FlavorCarousel() {
                       fill
                       className="object-contain p-2"
                       priority
+                      unoptimized
                     />
                   </div>
 

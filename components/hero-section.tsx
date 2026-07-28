@@ -254,6 +254,7 @@ export function HeroSection() {
                   height={375}
                   className="relative z-10 rounded-2xl shadow-2xl border border-gray-200"
                   priority
+                  unoptimized
                 />
               </motion.div>
             </motion.div>
