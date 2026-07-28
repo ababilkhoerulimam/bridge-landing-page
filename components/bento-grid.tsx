@@ -4,14 +4,14 @@ import type React from "react"
 
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useRef, useState } from "react"
-import { WifiOff, Clock, ShieldCheck, Brain } from "lucide-react"
+import { RefreshCw, Clock, ShieldCheck, Brain } from "lucide-react"
 
 const features = [
   {
-    icon: WifiOff,
-    title: "0",
-    subtitle: "Internet Required",
-    description: "Full offline SQLite operation in any factory environment",
+    icon: RefreshCw,
+    title: "Hybrid",
+    subtitle: "Offline-First & Auto-Sync",
+    description: "Input mandor 100% offline di lapangan, data otomatis ter-sinkron ke cloud saat ada sinyal.",
     accent: "#3b82f6",
   },
   {
