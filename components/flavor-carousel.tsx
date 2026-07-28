@@ -15,7 +15,7 @@ const products = [
     tagline: "For Mandors",
     description:
       "Offline-first tablet logbook. Log kiln temperatures, clay ratios, and batch outputs in under 2 minutes. No internet needed.",
-    image: "/images/image.png",
+    image: "/images/mandor-collect.png",
     bgColor: "from-[#3b82f6]/20 via-[#3b82f6]/10 to-transparent",
     accentColor: "#3b82f6",
     badges: ["Offline SQLite", "Hard Guards", "PIN Sign-off", "Auto-Sync"],
@@ -26,7 +26,7 @@ const products = [
     tagline: "For Factory Owners",
     description:
       "Real-time OEE metrics, material yield trends, and shift-level diagnostics. See your whole operation at a glance.",
-    image: "/images/image.png",
+    image: "/images/owner-dashboard.png",
     bgColor: "from-[#10b981]/20 via-[#10b981]/10 to-transparent",
     accentColor: "#10b981",
     badges: ["Real-time OEE", "Yield Analytics", "Shift Reports", "Cloud Backup"],
@@ -37,7 +37,7 @@ const products = [
     tagline: "AI Optimization",
     description:
       "Prescriptive next-batch material recipe recommendations tailored to your local clay characteristics. Reduce waste, maximize yield.",
-    image: "/images/image.png",
+    image: "/images/decision-intelligence.png",
     bgColor: "from-[#f59e0b]/20 via-[#f59e0b]/10 to-transparent",
     accentColor: "#f59e0b",
     badges: ["Recipe Optimizer", "Clay Intelligence", "Waste Reduction", "Predictive"],
