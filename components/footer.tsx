@@ -50,12 +50,12 @@ export function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
-          className="text-center mb-12"
+          className="text-center max-w-4xl mx-auto mb-12 px-4"
         >
-          <span className="font-mono text-[#3b82f6] text-xs tracking-widest uppercase">
+          <span className="font-mono text-[#3b82f6] text-xs tracking-widest uppercase inline-block">
             PRICING PLANS
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter mt-2">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mt-2 font-outfit leading-tight">
             Simple, Transparent Investment
           </h2>
         </motion.div>
