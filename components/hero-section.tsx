@@ -248,7 +248,7 @@ export function HeroSection() {
                 }}
               >
                 <Image
-                  src="/images/image.png"
+                  src="/images/image.jpg"
                   alt="BRIDGE Dashboard — Offline-First Factory Floor Intelligence"
                   width={500}
                   height={375}
