@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useInView, AnimatePresence } from "framer-motion"
+import { motion, useInView, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useState, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
@@ -16,6 +16,12 @@ export function Footer() {
   const footerRef = useRef(null)
   const isInView = useInView(footerRef, { once: true, margin: "-100px" })
   const lenis = useLenis()
+
+  const { scrollYProgress } = useScroll({
+    target: footerRef,
+    offset: ["start end", "end start"],
+  })
+  const watermarkY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"])
 
   const scrollToDemo = () => {
     const element = document.querySelector("#demo-form")
@@ -39,12 +45,15 @@ export function Footer() {
 
   return (
     <footer id="pricing" ref={footerRef} className="bg-[#121212] text-white pt-20 pb-8 relative overflow-hidden">
-      {/* Giant Background Watermark Text */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0">
+      {/* Giant Background Watermark Text with Parallax */}
+      <motion.div
+        style={{ y: watermarkY }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden z-0"
+      >
         <span className="text-[22vw] font-black text-white/[0.035] tracking-tighter uppercase font-outfit leading-none whitespace-nowrap">
           BRIDGE
         </span>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
